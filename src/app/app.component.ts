@@ -14,11 +14,15 @@ export class AppComponent implements OnInit, OnDestroy {
   secondes:number;
   counterSubscription: Subscription;  
 
-  constructor(){}
+  constructor(private appareilService: AppareilService){}
+
   ngOnInit(): void {
     this.counterSubscription = interval(1000).subscribe(
       (value:number) => { this.secondes = value; }
     );
+    
+    this.appareilService.getAppareilsFromServer();
+    
       // counter.subscribe((value:number) => {
       //   this.secondes = value;
       // }, (error:any) => {

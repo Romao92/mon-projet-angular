@@ -9,6 +9,12 @@
       <app-appareil [appareilName]="appareilTwo" [appareilStatus]="'allumé'"></app-appareil>
       <app-appareil [appareilName]="appareilThree" [appareilStatus]="'éteint'"></app-appareil> -->
     </ul>
-    <button class="btn btn-success" [disabled]="!isAuth" (click)="onAllumer()">Tout allumer</button>
-    <button class="btn btn-danger" (click)="onEteindre()">Tout éteindre</button>
+    <button class="btn btn-success" [disabled]="!isAuth" 
+        (click)="onAllumer()">Tout allumer</button>
+    <button class="btn btn-danger" 
+        (click)="onEteindre()">Tout éteindre</button>
+    <button class="btn btn-success" 
+        (click)="onSave()">Enregistrer vers la DB Firebase</button>
+    <button class="btn btn-primary" 
+        (click)="onFetch()">Charger</button>
 </div>

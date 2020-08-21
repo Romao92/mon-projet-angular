@@ -1,25 +1,20 @@
 import { Subject } from 'rxjs/Subject';
+import { Injectable, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
-export class AppareilService {
+@Injectable()
+export class AppareilService implements OnInit{
+
     appareilSubject = new Subject<any[]>();
 
-    private appareils = [
-        {
-            id: 1,
-            name: 'Machine à laver',
-            status: 'éteint'
-        },
-        {
-            id: 2,
-            name: 'Télévision',
-            status: 'allumé'
-        },
-        {
-            id: 3,
-            name: 'Ordinateur',
-            status: 'éteint'
-        }
-    ];
+    private appareils = [];
+
+    constructor(private httpClient: HttpClient) {
+
+    }
+    ngOnInit(): void {
+      
+    }
 
     emitAppareilSubject() {
         this.appareilSubject.next(this.appareils.slice())
@@ -56,5 +51,40 @@ export class AppareilService {
     switchOffOne(index: number) {
         this.appareils[index].status = 'éteint';
         this.emitAppareilSubject();
+    }
+
+    addAppareil(name: string, status: string) {
+        const appareilObject = { id: 0, name: '', status: '' };
+        appareilObject.name = name;
+        appareilObject.status = status;
+        appareilObject.id = (this.appareils.length != null && this.appareils.length > 0) ? this.appareils[(this.appareils.length - 1)].id + 1 : 0;
+
+        this.appareils.push(appareilObject);
+        this.emitAppareilSubject();
+    }
+
+    saveAppareilsToServer() {
+        this.httpClient.put('https://http-client-demo-87c61.firebaseio.com/appareils.json',
+            this.appareils).subscribe(
+                (next) => {
+                    console.log('Enregistrement DB terminé');
+                },
+                (error) => {
+                    console.log('erreur de sauvegarde ! ' + error);
+                }
+            );
+
+    }
+
+    getAppareilsFromServer(){
+        this.httpClient.get<any[]>('https://http-client-demo-87c61.firebaseio.com/appareils.json')
+        .subscribe((response) => {
+            this.appareils = response;
+            this.emitAppareilSubject();
+            },
+            (error) => {
+                console.log('Erreur de chargement'+error);
+            }
+        )
     }
 }
